@@ -209,6 +209,8 @@ yolo_uec_food256/labels/
 food_yolov8s.zip
 # weights/ = duplikat dari Model/best.pt (yg dipakai app)
 weights/
+# yolov8n.pt = bobot COCO pretrained (auto-download utk fitur tracking buah)
+yolov8n.pt
 
 # ---- Output training Ultralytics (kalau muncul) ----
 runs/
@@ -218,4 +220,4 @@ runs/
 
 TestSet/
 *.zip
-
+ModelTrainResult/

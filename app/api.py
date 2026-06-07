@@ -16,7 +16,7 @@ import cv2
 import numpy as np
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from PIL import Image
 
 APP_DIR = Path(__file__).resolve().parent
@@ -24,7 +24,9 @@ if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
 import features_demo as feat          # noqa: E402
+import fruit as fruitmod              # noqa: E402  (fitur tambahan: tracking buah)
 import nms_demo as nmsd               # noqa: E402
+import portion as por                 # noqa: E402
 import preprocessing as pre           # noqa: E402
 import segmentation as seg            # noqa: E402
 from detector import FoodDetector, draw_detections   # noqa: E402
@@ -80,6 +82,28 @@ def health():
     return {"status": "ok", "n_classes": len(detector.names)}
 
 
+# ----------------------------- fitur tambahan: tracking buah (webcam) -----------
+@app.get("/api/track-stream")
+def track_stream():
+    """Stream MJPEG webcam dgn bounding box buah (ByteTrack). Pipeline terpisah."""
+    return StreamingResponse(
+        fruitmod.generate_frames(),
+        media_type="multipart/x-mixed-replace; boundary=frame",
+    )
+
+
+@app.get("/api/track-status")
+def track_status():
+    """Buah yang sedang terlihat + FPS (utk panel live di frontend)."""
+    return fruitmod.latest_status()
+
+
+@app.get("/api/fruit-info")
+def fruit_info():
+    """Tabel referensi gizi 3 buah (apel/pisang/jeruk)."""
+    return {"fruits": fruitmod.fruit_info()}
+
+
 @app.post("/api/analyze")
 async def analyze(
     file: UploadFile = File(...),
@@ -95,38 +119,75 @@ async def analyze(
     H, W = rgb.shape[:2]
     proc = preprocess(rgb, denoise, denoise_k, do_sharpen, sharpen_amt)
 
-    # ---- deteksi (single dish: confidence tertinggi) ----
+    # ---- deteksi (multi-plate: semua makanan yang terdeteksi) ----
     dets = detector.predict(proc, conf=conf, iou=iou)
     dets.sort(key=lambda d: d["conf"], reverse=True)
-    top = dets[0] if dets else None
+    image_area = H * W
 
-    # ---- skala: tidak ada kartu referensi, selalu pakai porsi standar CSV ----
-    scale = {"ok": False, "px_per_cm": 0.0, "inliers": 0,
-             "reason": "menggunakan porsi standar dari CSV"}
-
-    # ---- deteksi + nutrisi ----
-    detection = None
-    seg_mask = None
+    # ---- segmentasi + estimasi porsi per item ----
+    detections_out = []
+    seg_masks = []
     totals = {"kcal": 0.0, "protein_g": 0.0, "carbs_g": 0.0, "fat_g": 0.0}
-    if top is not None:
-        s = seg.segment_food_in_box(proc, top["xyxy"])
-        seg_mask = s["mask_full"]
+
+    for det in dets:
+        cid = det["class_id"]
+        s = seg.segment_food_in_box(proc, det["xyxy"])
+        seg_masks.append(s["mask_full"])
         area_px = int(s["area_px"])
-        # Gram selalu dari porsi standar CSV (typical_serving_g).
-        grams = db.default_grams(top["class_id"])
-        portion_source = "porsi standar (CSV)"
-        nut = db.nutrition_for(top["class_id"], grams)
-        detection = {
-            "name": nut["name"], "class_id": top["class_id"],
-            "conf": round(float(top["conf"]), 3), "xyxy": top["xyxy"],
+
+        # Estimasi porsi dari rasio area
+        portion = por.estimate_portion_from_area(
+            area_px=area_px,
+            image_area=image_area,
+            food_profile=db.food_profile(cid),
+            typical_serving_g=db.default_grams(cid),
+        )
+        grams = portion["grams"]
+        nut = db.nutrition_for(cid, grams)
+
+        detections_out.append({
+            "name": nut["name"], "class_id": cid,
+            "conf": round(float(det["conf"]), 3), "xyxy": det["xyxy"],
             "grams": round(float(grams)), "kcal": nut["kcal"],
-            "protein_g": nut["protein_g"], "carbs_g": nut["carbs_g"], "fat_g": nut["fat_g"],
+            "protein_g": nut["protein_g"], "carbs_g": nut["carbs_g"],
+            "fat_g": nut["fat_g"],
             "area_px": area_px, "area_cm2": None,
             "source": nut["source"], "verified": nut["verified"],
-            "portion_source": portion_source,
-        }
-        totals = {"kcal": nut["kcal"], "protein_g": nut["protein_g"],
-                  "carbs_g": nut["carbs_g"], "fat_g": nut["fat_g"]}
+            "portion_source": f"estimasi area ({portion['size_label']})",
+            "size_label": portion["size_label"],
+            "multiplier": portion["multiplier"],
+            "area_ratio": portion["area_ratio"],
+        })
+        for k in totals:
+            totals[k] += nut[k]
+
+    # ---- fitur tambahan: deteksi buah (apel/pisang/jeruk) via COCO ----
+    # Membuat upload image & foto webcam juga mengenali buah (model COCO terpisah).
+    for fd in fruitmod.detect_fruits(proc, conf=conf):
+        s = seg.segment_food_in_box(proc, fd["xyxy"])
+        seg_masks.append(s["mask_full"])
+        area_px = int(s["area_px"])
+        serving = fruitmod.FRUIT_NUTRITION[fd["name"]]["serving_g"]
+        portion = por.estimate_portion_from_area(
+            area_px=area_px, image_area=image_area,
+            food_profile="default", typical_serving_g=serving)
+        grams = portion["grams"]
+        nut = fruitmod.fruit_nutrition_for(fd["name"], grams)
+        detections_out.append({
+            "name": nut["name"], "class_id": fd["class_id"],
+            "conf": round(float(fd["conf"]), 3), "xyxy": fd["xyxy"],
+            "grams": round(float(grams)), "kcal": nut["kcal"],
+            "protein_g": nut["protein_g"], "carbs_g": nut["carbs_g"],
+            "fat_g": nut["fat_g"],
+            "area_px": area_px, "area_cm2": None,
+            "source": nut["source"], "verified": nut["verified"],
+            "portion_source": f"estimasi area ({portion['size_label']})",
+            "size_label": portion["size_label"],
+            "multiplier": portion["multiplier"],
+            "area_ratio": portion["area_ratio"],
+        })
+        for k in totals:
+            totals[k] += nut[k]
 
     # ---- gambar overlay (pakai salinan di-downscale supaya cepat & ringan) ----
     disp = _resize_max(rgb, DISP_MAX)
@@ -147,8 +208,8 @@ async def analyze(
     match_img, match_n = feat.orb_match_invariance(disp)
     images["orb_match"] = to_data_url(match_img, max_dim=1100)
     # Segmentasi area makanan (overlay merah) — visualisasi materi segmentasi.
-    images["segmentation"] = (to_data_url(seg.overlay_masks(rgb, [seg_mask]))
-                              if seg_mask is not None else None)
+    images["segmentation"] = (to_data_url(seg.overlay_masks(rgb, seg_masks))
+                              if seg_masks else None)
 
     # ---- NMS demo ----
     before = detector.predict(disp_proc, conf=max(0.05, conf - 0.1), iou=0.9, max_det=300)
@@ -164,9 +225,8 @@ async def analyze(
 
     return JSONResponse({
         "image_w": W, "image_h": H,
-        "detection": detection,
+        "detections": detections_out,
         "totals": {k: round(v, 1) for k, v in totals.items()},
-        "scale": scale,
         "images": images,
         "counts": counts,
     })

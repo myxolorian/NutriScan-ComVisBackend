@@ -85,6 +85,11 @@ class NutritionDB:
         row = self.lookup(class_id)
         return float(row["area_to_gram_coeff"]) if row else 0.0
 
+    def food_profile(self, class_id):
+        """Return profil makanan (rice, meat, soup, …) untuk class_id."""
+        row = self.lookup(class_id)
+        return str(row["profile"]) if row and "profile" in row else "default"
+
 
 def build_item_rows(detections, db: NutritionDB, grams_by_index=None):
     """Bangun baris tabel per-item.

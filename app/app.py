@@ -41,14 +41,6 @@ def load_db():
     return NutritionDB()
 
 
-@st.cache_resource
-def load_template():
-    p = por.DEFAULT_TEMPLATE
-    if not p.exists():
-        por.make_reference_card(p)
-    return np.array(Image.open(p).convert("RGB"))
-
-
 detector = load_detector()
 db = load_db()
 
@@ -66,16 +58,6 @@ denoise_k = st.sidebar.slider("Kernel size denoise", 3, 15, 5, 2)
 do_sharpen = st.sidebar.checkbox("Unsharp sharpening")
 sharpen_amt = st.sidebar.slider("Sharpen amount", 0.2, 3.0, 1.0, 0.1,
                                 disabled=not do_sharpen)
-
-st.sidebar.subheader("Estimasi porsi (Materi: Fitur + Homografi)")
-use_reference = st.sidebar.checkbox(
-    "Foto memuat kartu referensi (8.56 × 5.40 cm)",
-    help="Letakkan kartu referensi tercetak di samping makanan untuk kalori ter-skala.")
-template_rgb = load_template()
-st.sidebar.download_button(
-    "⬇️ Unduh kartu referensi (cetak 8.56×5.4 cm)",
-    data=por.DEFAULT_TEMPLATE.read_bytes(),
-    file_name="reference_card.png", mime="image/png")
 
 st.sidebar.subheader("Sumber gambar")
 source = st.sidebar.radio("Input", ["Upload", "Webcam"], horizontal=True)
@@ -114,20 +96,27 @@ detections = detector.predict(proc, conf=conf, iou=iou)
 
 
 # ----------------------------- Estimasi porsi -----------------------------
-scale_result = {"ok": False, "px_per_cm": 0.0, "reason": "kartu referensi tidak dipakai"}
 masks = []
 grams_by_index = {}
-if use_reference:
-    scale_result = por.estimate_scale_orb(proc, template_rgb)
+
+image_area = proc.shape[0] * proc.shape[1]
 
 for i, det in enumerate(detections):
     s = seg.segment_food_in_box(proc, det["xyxy"])
     masks.append(s["mask_full"])
     det["area_px"] = s["area_px"]
-    if scale_result["ok"]:
-        grams = por.grams_from_area(s["area_px"], scale_result["px_per_cm"],
-                                    db.area_coeff(det["class_id"]))
-        grams_by_index[i] = grams
+
+    # Area-ratio estimation
+    portion = por.estimate_portion_from_area(
+        area_px=s["area_px"],
+        image_area=image_area,
+        food_profile=db.food_profile(det["class_id"]),
+        typical_serving_g=db.default_grams(det["class_id"]),
+    )
+    grams_by_index[i] = portion["grams"]
+    det["size_label"] = portion["size_label"]
+    det["multiplier"] = portion["multiplier"]
+    det["area_ratio"] = portion["area_ratio"]
 
 # Lampirkan kkal & gram ke tiap deteksi (untuk label gambar).
 for i, det in enumerate(detections):
@@ -142,7 +131,7 @@ rows, totals = build_item_rows(detections, db, grams_by_index)
 # ----------------------------- Output (Tabs) -----------------------------
 tab_main, tab_filter, tab_feat, tab_portion = st.tabs(
     ["🍽️ Deteksi & Nutrisi", "🧪 Filtering & Edge", "🔑 Fitur & NMS",
-     "📐 Estimasi Porsi (Homografi)"])
+     "📐 Estimasi Porsi (Area)"])
 
 with tab_main:
     c1, c2 = st.columns([3, 2])
@@ -153,12 +142,7 @@ with tab_main:
         st.image(annotated, caption=f"{len(detections)} makanan terdeteksi",
                  use_container_width=True)
     with c2:
-        if not scale_result["ok"]:
-            st.warning("Porsi memakai **porsi standar** (kartu referensi tidak "
-                       f"terdeteksi: {scale_result['reason']}).")
-        else:
-            st.success(f"Skala terdeteksi: **{scale_result['px_per_cm']:.1f} px/cm** "
-                       f"({scale_result['n_inliers']} inlier) — kalori ter-skala porsi.")
+        st.info("Porsi diestimasi dari rasio area piksel segmentasi terhadap gambar keseluruhan.")
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Total Kalori", f"{totals['kcal']:.0f} kkal")
         m2.metric("Protein", f"{totals['protein_g']:.0f} g")
@@ -231,33 +215,19 @@ with tab_feat:
               use_container_width=True)
 
 with tab_portion:
-    st.subheader("Materi: ORB descriptor + Homografi (RANSAC) + Projective transform")
-    if not use_reference:
-        st.info("Aktifkan **'Foto memuat kartu referensi'** di sidebar, lalu unggah "
-                "foto yang memuat kartu referensi tercetak di samping makanan.")
-    elif not scale_result["ok"]:
-        st.warning(f"Kartu referensi tidak terdeteksi: {scale_result['reason']}. "
-                   "Pastikan kartu tampak utuh, tidak buram, dan tidak terlalu miring.")
-    else:
-        st.success(f"px/cm = **{scale_result['px_per_cm']:.2f}**, "
-                   f"inlier RANSAC = {scale_result['n_inliers']}")
-        c1, c2 = st.columns(2)
-        c1.image(por.draw_reference_quad(image_rgb, scale_result["quad"]),
-                 caption="Kartu referensi terdeteksi (homografi)",
-                 use_container_width=True)
-        rect = por.rectify_topdown(image_rgb, scale_result["H"], template_rgb.shape)
-        c2.image(rect, caption="Bird's-eye rectified (warpPerspective)",
-                 use_container_width=True)
-        area_rows = []
-        for det in detections:
-            ppc = scale_result["px_per_cm"]
-            area_cm2 = det["area_px"] / (ppc ** 2)
-            area_rows.append({
-                "Makanan": det["name"], "Area (px)": det["area_px"],
-                "Area (cm²)": round(area_cm2, 1),
-                "Massa est. (g)": det["grams"],
-                "Kalori (kkal)": round(det["kcal"], 0),
-            })
-        if area_rows:
-            st.dataframe(pd.DataFrame(area_rows), use_container_width=True,
-                         hide_index=True)
+    st.subheader("Estimasi Porsi (Area Ratio)")
+    st.info("Porsi diestimasi dari rasio area segmentasi terhadap gambar.")
+    
+    area_rows = []
+    for det in detections:
+        area_rows.append({
+            "Makanan": det["name"], 
+            "Area (px)": f"{det['area_px']:,}",
+            "Area Ratio": f"{det['area_ratio']*100:.1f}%",
+            "Ukuran": det["size_label"], 
+            "Multiplier": f"×{det['multiplier']:.2f}",
+            "Massa est. (g)": det["grams"],
+            "Kalori (kkal)": round(det["kcal"], 0),
+        })
+    if area_rows:
+        st.dataframe(pd.DataFrame(area_rows), use_container_width=True, hide_index=True)
