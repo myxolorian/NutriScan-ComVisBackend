@@ -1,0 +1,257 @@
+class_id,name,kcal_per_100g,protein_g,carbs_g,fat_g,typical_serving_g,area_to_gram_coeff,profile,notes
+0,rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+1,eels on rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+2,pilaf,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+3,chicken-'n'-egg on rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+4,pork cutlet on rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+5,beef curry,230,20,3,16,150,2.0,meat,draft auto-estimate
+6,sushi,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+7,chicken rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+8,fried rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+9,tempura bowl,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+10,bibimbap,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+11,toast,280,10,35,11,150,1.4,handheld,draft auto-estimate
+12,croissant,280,10,35,11,150,1.4,handheld,draft auto-estimate
+13,roll bread,280,10,35,11,150,1.4,handheld,draft auto-estimate
+14,raisin bread,280,10,35,11,150,1.4,handheld,draft auto-estimate
+15,chip butty,180,8,20,8,180,1.6,default,draft auto-estimate
+16,hamburger,280,10,35,11,150,1.4,handheld,draft auto-estimate
+17,pizza,266,11,33,10,150,1.5,pizza,draft auto-estimate
+18,sandwiches,280,10,35,11,150,1.4,handheld,draft auto-estimate
+19,udon noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+20,tempura udon,145,6,22,4,250,1.8,noodle,draft auto-estimate
+21,soba noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+22,ramen noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+23,beef noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+24,tensin noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+25,fried noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+26,spaghetti,145,6,22,4,250,1.8,noodle,draft auto-estimate
+27,Japanese-style pancake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+28,takoyaki,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+29,gratin,180,8,20,8,180,1.6,default,draft auto-estimate
+30,sauteed vegetables,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+31,croquette,280,14,18,18,150,1.6,fried,draft auto-estimate
+32,grilled eggplant,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+33,sauteed spinach,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+34,vegetable tempura,280,14,18,18,150,1.6,fried,draft auto-estimate
+35,miso soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+36,potage,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+37,sausage,230,20,3,16,150,2.0,meat,draft auto-estimate
+38,oden,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+39,omelet,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+40,ganmodoki,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+41,jiaozi,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+42,stew,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+43,teriyaki grilled fish,230,20,3,16,150,2.0,meat,draft auto-estimate
+44,fried fish,280,14,18,18,150,1.6,fried,draft auto-estimate
+45,grilled salmon,150,18,2,7,150,1.7,seafood,draft auto-estimate
+46,salmon meuniere,150,18,2,7,150,1.7,seafood,draft auto-estimate
+47,sashimi,150,18,2,7,150,1.7,seafood,draft auto-estimate
+48,grilled pacific saury,150,18,2,7,150,1.7,seafood,draft auto-estimate
+49,sukiyaki,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+50,sweet and sour pork,230,20,3,16,150,2.0,meat,draft auto-estimate
+51,lightly roasted fish,150,18,2,7,150,1.7,seafood,draft auto-estimate
+52,steamed egg hotchpotch,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+53,tempura,280,14,18,18,150,1.6,fried,draft auto-estimate
+54,fried chicken,280,14,18,18,150,1.6,fried,draft auto-estimate
+55,sirloin cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+56,nanbanzuke,180,8,20,8,180,1.6,default,draft auto-estimate
+57,boiled fish,150,18,2,7,150,1.7,seafood,draft auto-estimate
+58,seasoned beef with potatoes,230,20,3,16,150,2.0,meat,draft auto-estimate
+59,hambarg steak,230,20,3,16,150,2.0,meat,draft auto-estimate
+60,steak,230,20,3,16,150,2.0,meat,draft auto-estimate
+61,dried fish,150,18,2,7,150,1.7,seafood,draft auto-estimate
+62,ginger pork saute,230,20,3,16,150,2.0,meat,draft auto-estimate
+63,spicy chili-flavored tofu,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+64,yakitori,230,20,3,16,150,2.0,meat,draft auto-estimate
+65,cabbage roll,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+66,omelet,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+67,egg sunny-side up,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+68,natto,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+69,cold tofu,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+70,egg roll,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+71,chilled noodle,145,6,22,4,250,1.8,noodle,draft auto-estimate
+72,stir-fried beef and peppers,280,14,18,18,150,1.6,fried,draft auto-estimate
+73,simmered pork,230,20,3,16,150,2.0,meat,draft auto-estimate
+74,boiled chicken and vegetables,230,20,3,16,150,2.0,meat,draft auto-estimate
+75,sashimi bowl,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+76,sushi bowl,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+77,fish-shaped pancake with bean jam,350,5,50,15,120,1.2,dessert,draft auto-estimate
+78,shrimp with chill source,150,18,2,7,150,1.7,seafood,draft auto-estimate
+79,roast chicken,230,20,3,16,150,2.0,meat,draft auto-estimate
+80,steamed meat dumpling,230,20,3,16,150,2.0,meat,draft auto-estimate
+81,omelet with fried rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+82,cutlet curry,280,14,18,18,150,1.6,fried,draft auto-estimate
+83,spaghetti meat sauce,145,6,22,4,250,1.8,noodle,draft auto-estimate
+84,fried shrimp,280,14,18,18,150,1.6,fried,draft auto-estimate
+85,potato salad,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+86,green salad,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+87,macaroni salad,145,6,22,4,250,1.8,noodle,draft auto-estimate
+88,Japanese tofu and vegetable chowder,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+89,pork miso soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+90,chinese soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+91,beef bowl,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+92,kinpira-style sauteed burdock,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+93,rice ball,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+94,pizza toast,266,11,33,10,150,1.5,pizza,draft auto-estimate
+95,dipping noodles,145,6,22,4,250,1.8,noodle,draft auto-estimate
+96,hot dog,280,10,35,11,150,1.4,handheld,draft auto-estimate
+97,french fries,280,14,18,18,150,1.6,fried,draft auto-estimate
+98,mixed rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+99,goya chanpuru,180,8,20,8,180,1.6,default,draft auto-estimate
+100,green curry,130,6,14,6,250,2.0,curry,draft auto-estimate
+101,okinawa soba,145,6,22,4,250,1.8,noodle,draft auto-estimate
+102,mango pudding,350,5,50,15,120,1.2,dessert,draft auto-estimate
+103,almond jelly,350,5,50,15,120,1.2,dessert,draft auto-estimate
+104,jjigae,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+105,dak galbi,230,20,3,16,150,2.0,meat,draft auto-estimate
+106,dry curry,130,6,14,6,250,2.0,curry,draft auto-estimate
+107,kamameshi,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+108,rice vermicelli,145,6,22,4,250,1.8,noodle,draft auto-estimate
+109,paella,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+110,tanmen,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+111,kushikatu,280,14,18,18,150,1.6,fried,draft auto-estimate
+112,yellow curry,130,6,14,6,250,2.0,curry,draft auto-estimate
+113,pancake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+114,champon,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+115,crape,350,5,50,15,120,1.2,dessert,draft auto-estimate
+116,tiramisu,350,5,50,15,120,1.2,dessert,draft auto-estimate
+117,waffle,350,5,50,15,120,1.2,dessert,draft auto-estimate
+118,rare cheese cake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+119,shortcake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+120,chop suey,180,8,20,8,180,1.6,default,draft auto-estimate
+121,twice cooked pork,230,20,3,16,150,2.0,meat,draft auto-estimate
+122,mushroom risotto,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+123,samul,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+124,zoni,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+125,french toast,280,10,35,11,150,1.4,handheld,draft auto-estimate
+126,fine white noodles,145,6,22,4,250,1.8,noodle,draft auto-estimate
+127,minestrone,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+128,pot au feu,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+129,chicken nugget,280,14,18,18,150,1.6,fried,draft auto-estimate
+130,namero,150,18,2,7,150,1.7,seafood,draft auto-estimate
+131,french bread,280,10,35,11,150,1.4,handheld,draft auto-estimate
+132,rice gruel,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+133,broiled eel bowl,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+134,clear soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+135,yudofu,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+136,mozuku,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+137,inarizushi,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+138,pork loin cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+139,pork fillet cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+140,chicken cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+141,ham cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+142,minced meat cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+143,thinly sliced raw horsemeat,230,20,3,16,150,2.0,meat,draft auto-estimate
+144,bagel,280,10,35,11,150,1.4,handheld,draft auto-estimate
+145,scone,350,5,50,15,120,1.2,dessert,draft auto-estimate
+146,tortilla,280,10,35,11,150,1.4,handheld,draft auto-estimate
+147,tacos,280,10,35,11,150,1.4,handheld,draft auto-estimate
+148,nachos,280,10,35,11,150,1.4,handheld,draft auto-estimate
+149,meat loaf,230,20,3,16,150,2.0,meat,draft auto-estimate
+150,scrambled egg,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+151,rice gratin,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+152,lasagna,145,6,22,4,250,1.8,noodle,draft auto-estimate
+153,Caesar salad,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+154,oatmeal,180,8,20,8,180,1.6,default,draft auto-estimate
+155,fried pork dumplings served in soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+156,oshiruko,350,5,50,15,120,1.2,dessert,draft auto-estimate
+157,muffin,350,5,50,15,120,1.2,dessert,draft auto-estimate
+158,popcorn,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+159,cream puff,350,5,50,15,120,1.2,dessert,draft auto-estimate
+160,doughnut,350,5,50,15,120,1.2,dessert,draft auto-estimate
+161,apple pie,350,5,50,15,120,1.2,dessert,draft auto-estimate
+162,parfait,350,5,50,15,120,1.2,dessert,draft auto-estimate
+163,fried pork in scoop,280,14,18,18,150,1.6,fried,draft auto-estimate
+164,lamb kebabs,230,20,3,16,150,2.0,meat,draft auto-estimate
+165,"dish consisting of stir-fried potato, eggplant and green pepper",280,14,18,18,150,1.6,fried,draft auto-estimate
+166,roast duck,230,20,3,16,150,2.0,meat,draft auto-estimate
+167,hot pot,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+168,pork belly,230,20,3,16,150,2.0,meat,draft auto-estimate
+169,xiao long bao,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+170,moon cake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+171,custard tart,350,5,50,15,120,1.2,dessert,draft auto-estimate
+172,beef noodle soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+173,pork cutlet,280,14,18,18,150,1.6,fried,draft auto-estimate
+174,minced pork rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+175,fish ball soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+176,oyster omelette,150,18,2,7,150,1.7,seafood,draft auto-estimate
+177,glutinous oil rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+178,trunip pudding,350,5,50,15,120,1.2,dessert,draft auto-estimate
+179,stinky tofu,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+180,lemon fig jelly,350,5,50,15,120,1.2,dessert,draft auto-estimate
+181,khao soi,145,6,22,4,250,1.8,noodle,draft auto-estimate
+182,Sour prawn soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+183,Thai papaya salad,75,3,9,3.5,150,1.0,veg,draft auto-estimate
+184,"boned, sliced Hainan-style chicken with marinated rice",150,4,30,2.5,200,2.0,rice,draft auto-estimate
+185,"hot and sour, fish and vegetable ragout",55,3,5,2.5,300,1.0,soup,draft auto-estimate
+186,stir-fried mixed vegetables,280,14,18,18,150,1.6,fried,draft auto-estimate
+187,beef in oyster sauce,230,20,3,16,150,2.0,meat,draft auto-estimate
+188,pork satay,230,20,3,16,150,2.0,meat,draft auto-estimate
+189,spicy chicken salad,230,20,3,16,150,2.0,meat,draft auto-estimate
+190,noodles with fish curry,145,6,22,4,250,1.8,noodle,draft auto-estimate
+191,Pork Sticky Noodles,145,6,22,4,250,1.8,noodle,draft auto-estimate
+192,Pork with lemon,230,20,3,16,150,2.0,meat,draft auto-estimate
+193,stewed pork leg,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+194,charcoal-boiled pork neck,230,20,3,16,150,2.0,meat,draft auto-estimate
+195,fried mussel pancakes,350,5,50,15,120,1.2,dessert,draft auto-estimate
+196,Deep Fried Chicken Wing,280,14,18,18,150,1.6,fried,draft auto-estimate
+197,Barbecued red pork in sauce with rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+198,Rice with roast duck,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+199,Rice crispy pork,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+200,Wonton soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+201,Chicken Rice Curry With Coconut,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+202,Crispy Noodles,145,6,22,4,250,1.8,noodle,draft auto-estimate
+203,Egg Noodle In Chicken Yellow Curry,145,6,22,4,250,1.8,noodle,draft auto-estimate
+204,coconut milk soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+205,pho,145,6,22,4,250,1.8,noodle,draft auto-estimate
+206,Hue beef rice vermicelli soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+207,Vermicelli noodles with snails,145,6,22,4,250,1.8,noodle,draft auto-estimate
+208,Fried spring rolls,280,14,18,18,150,1.6,fried,draft auto-estimate
+209,Steamed rice roll,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+210,Shrimp patties,150,18,2,7,150,1.7,seafood,draft auto-estimate
+211,ball shaped bun with pork,230,20,3,16,150,2.0,meat,draft auto-estimate
+212,Coconut milk-flavored crepes with shrimp and beef,350,5,50,15,120,1.2,dessert,draft auto-estimate
+213,Small steamed savory rice pancake,350,5,50,15,120,1.2,dessert,draft auto-estimate
+214,Glutinous Rice Balls,350,5,50,15,120,1.2,dessert,draft auto-estimate
+215,loco moco,230,20,3,16,150,2.0,meat,draft auto-estimate
+216,haupia,350,5,50,15,120,1.2,dessert,draft auto-estimate
+217,malasada,350,5,50,15,120,1.2,dessert,draft auto-estimate
+218,laulau,180,8,20,8,180,1.6,default,draft auto-estimate
+219,spam musubi,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+220,oxtail soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+221,adobo,230,20,3,16,150,2.0,meat,draft auto-estimate
+222,lumpia,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+223,brownie,350,5,50,15,120,1.2,dessert,draft auto-estimate
+224,churro,350,5,50,15,120,1.2,dessert,draft auto-estimate
+225,jambalaya,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+226,nasi goreng,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+227,ayam goreng,180,8,20,8,180,1.6,default,draft auto-estimate
+228,ayam bakar,180,8,20,8,180,1.6,default,draft auto-estimate
+229,bubur ayam,180,8,20,8,180,1.6,default,draft auto-estimate
+230,gulai,230,20,3,16,150,2.0,meat,draft auto-estimate
+231,laksa,145,6,22,4,250,1.8,noodle,draft auto-estimate
+232,mie ayam,145,6,22,4,250,1.8,noodle,draft auto-estimate
+233,mie goreng,145,6,22,4,250,1.8,noodle,draft auto-estimate
+234,nasi campur,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+235,nasi padang,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+236,nasi uduk,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+237,babi guling,230,20,3,16,150,2.0,meat,draft auto-estimate
+238,kaya toast,280,10,35,11,150,1.4,handheld,draft auto-estimate
+239,bak kut teh,180,8,20,8,180,1.6,default,draft auto-estimate
+240,curry puff,230,9,26,10,150,1.5,dumpling,draft auto-estimate
+241,chow mein,145,6,22,4,250,1.8,noodle,draft auto-estimate
+242,zha jiang mian,145,6,22,4,250,1.8,noodle,draft auto-estimate
+243,kung pao chicken,230,20,3,16,150,2.0,meat,draft auto-estimate
+244,crullers,280,14,18,18,150,1.6,fried,draft auto-estimate
+245,eggplant with garlic sauce,145,11,3,10,130,1.6,egg_tofu,draft auto-estimate
+246,three cup chicken,230,20,3,16,150,2.0,meat,draft auto-estimate
+247,bean curd family style,180,8,20,8,180,1.6,default,draft auto-estimate
+248,salt & pepper fried shrimp with shell,280,14,18,18,150,1.6,fried,draft auto-estimate
+249,baked salmon,150,18,2,7,150,1.7,seafood,draft auto-estimate
+250,braised pork meat ball with napa cabbage,230,20,3,16,150,2.0,meat,draft auto-estimate
+251,winter melon soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate
+252,steamed spareribs,230,20,3,16,150,2.0,meat,draft auto-estimate
+253,chinese pumpkin pie,350,5,50,15,120,1.2,dessert,draft auto-estimate
+254,eight treasure rice,150,4,30,2.5,200,2.0,rice,draft auto-estimate
+255,hot & sour soup,55,3,5,2.5,300,1.0,soup,draft auto-estimate

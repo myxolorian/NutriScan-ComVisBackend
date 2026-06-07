@@ -1,0 +1,41 @@
+class_id,name,kcal_per_100g,protein_g,carbs_g,fat_g,typical_serving_g,density_g_per_cm3,source
+0,rice,130,2.7,28.0,0.3,150,0.85,"USDA FDC #168878 (Rice, white, cooked)"
+6,sushi,145,6.0,28.0,2.0,150,1.0,USDA FNDDS (Sushi roll)
+8,fried rice,170,5.0,24.0,6.0,250,0.85,USDA FNDDS (Fried rice)
+16,hamburger,250,15.0,29.0,9.0,110,0.8,"USDA FNDDS (Hamburger, plain, on bun)"
+17,pizza,266,11.0,33.0,10.0,150,0.7,"USDA FDC #170096 (Pizza, cheese)"
+18,sandwiches,250,11.0,28.0,10.0,150,0.5,"USDA FNDDS (Sandwich, generic)"
+22,ramen noodle,110,5.0,14.0,4.0,400,0.85,"USDA FNDDS (Ramen, cooked, with broth)"
+26,spaghetti,158,5.8,30.9,0.9,250,0.9,"USDA FDC #168928 (Pasta, cooked)"
+72,stir-fried beef and peppers,149,12.0,6.0,8.5,200,0.9,"USDA FNDDS (Beef with peppers, stir-fried)"
+78,shrimp with chill source,130,14.0,6.0,5.0,150,0.9,USDA FNDDS (Shrimp in chili sauce)
+80,steamed meat dumpling,220,9.0,26.0,9.0,120,0.8,"USDA FNDDS (Dumpling, steamed, meat)"
+96,hot dog,290,11.0,22.0,17.0,100,0.7,"USDA FNDDS (Hot dog, with bun)"
+97,french fries,280,3.4,36.0,14.0,120,0.5,USDA FDC #170437 (French fries)
+101,okinawa soba,130,6.0,20.0,3.0,350,0.8,MEXT (Okinawa soba)
+131,french bread,274,9.0,52.0,3.0,80,0.3,"USDA FDC #172731 (Bread, French/Vienna)"
+136,mozuku,14,0.5,3.0,0.1,100,1.0,MEXT (Mozuku seaweed)
+137,inarizushi,200,5.0,38.0,3.5,120,0.9,MEXT (Inarizushi)
+138,pork loin cutlet,290,18.0,15.0,18.0,150,0.85,"MEXT (Tonkatsu, pork loin cutlet)"
+143,thinly sliced raw horsemeat,110,20.1,0.3,2.5,80,1.05,"MEXT 11109 (Horse, raw / basashi)"
+153,Caesar salad,110,4.0,6.0,8.0,150,0.4,USDA FNDDS (Caesar salad)
+162,parfait,230,4.0,30.0,11.0,150,0.6,"USDA FNDDS (Parfait, dessert)"
+167,hot pot,100,8.0,5.0,5.0,350,0.95,"USDA FNDDS (Hot pot, mixed)"
+168,pork belly,320,15.0,1.0,28.0,120,0.95,"USDA FDC (Pork belly, cooked)"
+196,Deep Fried Chicken Wing,290,27.0,9.0,18.0,100,0.9,"USDA FDC (Chicken wing, fried, batter)"
+205,pho,72,5.0,9.0,1.5,350,1.0,"USDA FNDDS (Pho, Vietnamese noodle soup)"
+226,nasi goreng,247,9.4,31.5,9.0,250,0.85,FatSecret ID (Nasi goreng ayam)
+227,ayam goreng,250,19.0,8.0,15.0,120,0.9,TKPI Kemenkes (Ayam goreng)
+228,ayam bakar,185,22.0,3.0,9.0,120,0.95,TKPI Kemenkes (Ayam bakar)
+229,bubur ayam,155,11.0,15.0,5.0,250,1.0,FatSecret ID (Bubur ayam)
+230,gulai,180,9.0,6.0,13.0,150,0.95,TKPI Kemenkes (Gulai)
+231,laksa,110,5.0,12.0,5.0,350,0.95,Sing/MY Food Comp (Laksa)
+232,mie ayam,150,7.0,20.0,5.0,250,0.8,FatSecret ID (Mie ayam)
+233,mie goreng,180,6.0,24.0,7.0,250,0.7,FatSecret ID (Mie goreng)
+234,nasi campur,190,8.0,27.0,6.0,300,0.9,FatSecret ID (Nasi campur)
+235,nasi padang,210,9.0,24.0,9.0,300,0.9,"TKPI/Kompas (Nasi Padang, rata-rata)"
+236,nasi uduk,163,2.5,20.5,7.8,200,0.9,FatSecret ID (Nasi uduk)
+237,babi guling,290,20.0,2.0,23.0,150,0.95,FatSecret ID (Babi guling)
+240,curry puff,290,6.0,30.0,16.0,80,0.6,Sing/MY Food Comp (Curry puff)
+241,chow mein,150,6.0,20.0,5.0,250,0.7,"USDA FNDDS (Chow mein, with meat)"
+250,braised pork meat ball with napa cabbage,180,11.0,6.0,12.0,200,0.9,"USDA FNDDS (Pork meatball, braised)"

@@ -1,0 +1,15 @@
+# Food Calorie & Nutrition Detector — dependencies
+# Python 3.10+
+ultralytics>=8.3.0      # YOLOv8 inference (model.names + predict)
+opencv-python>=4.8.0    # classical CV: filter2D, Canny, ORB, findHomography(RANSAC)
+numpy>=1.24
+pandas>=2.0             # load nutrition.csv + tabel hasil
+pillow>=10.0            # baca gambar upload
+
+# --- Backend API (React frontend) ---
+fastapi>=0.110          # HTTP API yang membungkus pipeline CV
+uvicorn[standard]>=0.27 # ASGI server: uvicorn api:app --app-dir app --port 8000
+python-multipart>=0.0.9 # parsing upload multipart (file gambar)
+
+# --- Legacy (opsional) ---
+streamlit>=1.30.0       # UI lama (app/app.py) — tidak dipakai lagi sejak pindah ke React
