@@ -34,16 +34,34 @@ FRUIT_NUTRITION = {
 }
 
 _MODEL = None
+# Ukuran inferensi (px). Makin kecil → makin cepat (biaya ∝ ukuran²).
+# 320 = seimbang; turunkan ke 256 utk FPS lebih tinggi (akurasi sedikit turun).
+INFER_SIZE = 320
 # Status terkini (di-update tiap frame) untuk panel live di frontend.
 _latest = {"fruits": [], "fps": 0.0}
 
 
 def _get_model():
-    """Load YOLOv8n COCO sekali (ringan → real-time; auto-download saat pertama)."""
+    """Load YOLOv8n COCO sekali, percepat dengan OpenVINO bila tersedia.
+
+    OpenVINO mempercepat inferensi di CPU Intel ~2-3×. Folder
+    `yolov8n_openvino_model/` dibuat sekali (auto-export); bila openvino tidak
+    terpasang → fallback ke bobot .pt biasa (tetap jalan, hanya lebih lambat).
+    """
     global _MODEL
     if _MODEL is None:
+        from pathlib import Path
         from ultralytics import YOLO
-        _MODEL = YOLO("yolov8n.pt")
+        ov_dir = Path(__file__).resolve().parent.parent / "yolov8n_openvino_model"
+        if ov_dir.exists():
+            _MODEL = YOLO(str(ov_dir), task="detect")
+        else:
+            base = YOLO("yolov8n.pt")
+            try:
+                base.export(format="openvino", imgsz=INFER_SIZE)  # buat folder sekali
+                _MODEL = YOLO(str(ov_dir), task="detect")
+            except Exception:
+                _MODEL = base  # openvino tak ada → pakai .pt apa adanya
     return _MODEL
 
 
@@ -83,7 +101,8 @@ def detect_fruits(rgb, conf=0.35):
     """
     model = _get_model()
     bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-    res = model.predict(bgr, classes=FRUIT_IDS, conf=conf, verbose=False)
+    res = model.predict(bgr, classes=FRUIT_IDS, conf=conf,
+                        imgsz=INFER_SIZE, verbose=False)
     r = res[0]
     out = []
     if r.boxes is not None:
@@ -104,8 +123,9 @@ def generate_frames(cam_index=0, conf=0.35):
 
     OPTIMASI CPU:
     - Resolusi webcam: 640×360 (vs 960×540, 4× lebih cepat)
-    - Skip frame: deteksi setiap 2 frame (tracking tetap smooth via Kalman)
-    - Inference size: 416 px (vs default 640)
+    - Deteksi SETIAP frame → box responsif mengikuti gerakan
+    - Inference size: INFER_SIZE px (320, kecil = cepat)
+    - OpenVINO (bila terpasang) → ~2-3× lebih cepat di CPU Intel
     - JPEG quality: 70 (vs 80)
     """
     model = _get_model()
@@ -113,8 +133,8 @@ def generate_frames(cam_index=0, conf=0.35):
     cap = cv2.VideoCapture(cam_index, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # buang frame lama → kurangi lag
     first = True
-    frame_count = 0
     prev = time.time()
     try:
         if not cap.isOpened():
@@ -124,42 +144,36 @@ def generate_frames(cam_index=0, conf=0.35):
             ok, frame = cap.read()
             if not ok:
                 break
-            frame_count += 1
-            # Deteksi setiap 2 frame (skip frame untuk CPU speed, Kalman tetap smooth).
+            # Deteksi+track SETIAP frame → box selalu menempel & responsif.
             # persist=False di frame pertama → reset ID tiap sesi tracking baru.
-            if frame_count % 2 == 0:
-                res = model.track(frame, persist=not first, classes=FRUIT_IDS,
-                                  conf=conf, imgsz=416, tracker="bytetrack.yaml",
-                                  verbose=False)
-                first = False
-                r = res[0]
-                fruits = []
-                if r.boxes is not None:
-                    for b in r.boxes:
-                        cid = int(b.cls[0])
-                        name, color = FRUIT_CLASSES.get(cid, ("?", (200, 200, 200)))
-                        tid = int(b.id[0]) if b.id is not None else -1
-                        x1, y1, x2, y2 = b.xyxy[0].int().tolist()
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 3)
-                        label = f"{name} #{tid}" if tid >= 0 else name
-                        (tw, th), bl = cv2.getTextSize(
-                            label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
-                        cv2.rectangle(frame, (x1, y1 - th - bl - 4),
-                                      (x1 + tw + 6, y1), color, -1)
-                        cv2.putText(frame, label, (x1 + 3, y1 - 5),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                                    (255, 255, 255), 2, cv2.LINE_AA)
-                        fruits.append({"name": name, "track_id": tid,
-                                       "conf": round(float(b.conf[0]), 2)})
-                _latest["fruits"] = fruits
+            res = model.track(frame, persist=not first, classes=FRUIT_IDS,
+                              conf=conf, imgsz=INFER_SIZE, tracker="bytetrack.yaml",
+                              verbose=False)
+            first = False
+            r = res[0]
+            fruits = []
+            if r.boxes is not None:
+                for b in r.boxes:
+                    cid = int(b.cls[0])
+                    name, color = FRUIT_CLASSES.get(cid, ("?", (200, 200, 200)))
+                    tid = int(b.id[0]) if b.id is not None else -1
+                    x1, y1, x2, y2 = b.xyxy[0].int().tolist()
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), color, 3)
+                    label = f"{name} #{tid}" if tid >= 0 else name
+                    (tw, th), bl = cv2.getTextSize(
+                        label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+                    cv2.rectangle(frame, (x1, y1 - th - bl - 4),
+                                  (x1 + tw + 6, y1), color, -1)
+                    cv2.putText(frame, label, (x1 + 3, y1 - 5),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                                (255, 255, 255), 2, cv2.LINE_AA)
+                    fruits.append({"name": name, "track_id": tid,
+                                   "conf": round(float(b.conf[0]), 2)})
+            _latest["fruits"] = fruits
 
             now = time.time()
             fps = 1.0 / max(1e-6, now - prev)
             prev = now
-            cv2.putText(frame, f"{fps:4.1f} FPS  |  ByteTrack (Kalman + Hungarian) [skip 1/2]",
-                        (10, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
-                        (0, 255, 0), 2, cv2.LINE_AA)
-
             _latest["fps"] = round(fps, 1)
 
             ok2, buf = cv2.imencode(".jpg", frame,

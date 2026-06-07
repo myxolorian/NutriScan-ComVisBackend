@@ -14,6 +14,7 @@ python-multipart>=0.0.9 # parsing upload multipart (file gambar)
 # --- Fitur tambahan: tracking buah real-time (webcam) ---
 # Model COCO yolov8n.pt auto-download saat pertama (butuh internet sekali).
 lapx>=0.5.0             # ByteTrack data association (Hungarian) untuk model.track()
+openvino>=2024.0        # akselerasi inferensi CPU Intel (~2-3× lebih cepat); opsional
 
 # --- Legacy (opsional) ---
 streamlit>=1.30.0       # UI lama (app/app.py) — tidak dipakai lagi sejak pindah ke React

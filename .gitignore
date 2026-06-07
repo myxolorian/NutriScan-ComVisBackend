@@ -211,6 +211,8 @@ food_yolov8s.zip
 weights/
 # yolov8n.pt = bobot COCO pretrained (auto-download utk fitur tracking buah)
 yolov8n.pt
+# yolov8n_openvino_model/ = hasil export OpenVINO (auto-generate, akselerasi CPU)
+yolov8n_openvino_model/
 
 # ---- Output training Ultralytics (kalau muncul) ----
 runs/
