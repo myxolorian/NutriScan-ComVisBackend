@@ -1,10 +1,4 @@
-"""Food Calorie & Nutrition Detector — Streamlit app.
 
-Pipeline: input (upload/webcam) -> preprocessing -> YOLOv8 -> segmentasi area
--> estimasi porsi (ORB+homografi RANSAC, opsional) -> lookup nutrisi -> output.
-
-Jalankan:  streamlit run app/app.py
-"""
 import sys
 from pathlib import Path
 
@@ -13,7 +7,7 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 
-# Pastikan modul sibling dapat di-import saat dijalankan via `streamlit run`.
+
 APP_DIR = Path(__file__).resolve().parent
 if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
@@ -30,7 +24,6 @@ st.set_page_config(page_title="Food Calorie & Nutrition Detector",
                    page_icon="🍱", layout="wide")
 
 
-# ----------------------------- Resource loaders -----------------------------
 @st.cache_resource(show_spinner="Memuat model YOLOv8 ...")
 def load_detector():
     return FoodDetector()
@@ -45,7 +38,7 @@ detector = load_detector()
 db = load_db()
 
 
-# ----------------------------- Sidebar (kontrol) -----------------------------
+
 st.sidebar.title("⚙️ Pengaturan")
 
 st.sidebar.subheader("Model")
@@ -63,7 +56,7 @@ st.sidebar.subheader("Sumber gambar")
 source = st.sidebar.radio("Input", ["Upload", "Webcam"], horizontal=True)
 
 
-# ----------------------------- Ambil gambar -----------------------------
+
 st.title("🍱 Food Calorie & Nutrition Detector")
 st.caption("YOLOv8 (UEC-Food-256) = *makanan apa* · Classical CV = *berapa banyak* · "
            "Tabel nutrisi = *berapa kalori*")
@@ -81,7 +74,7 @@ if raw is None:
 image_rgb = np.array(Image.open(raw).convert("RGB"))
 
 
-# ----------------------------- Preprocessing -----------------------------
+
 proc = image_rgb
 if denoise == "gaussian":
     proc = pre.gaussian_blur(proc, denoise_k)
@@ -91,11 +84,11 @@ if do_sharpen:
     proc = pre.unsharp_sharpen(proc, sharpen_amt, denoise_k)
 
 
-# ----------------------------- Deteksi -----------------------------
+
 detections = detector.predict(proc, conf=conf, iou=iou)
 
 
-# ----------------------------- Estimasi porsi -----------------------------
+
 masks = []
 grams_by_index = {}
 
@@ -118,7 +111,7 @@ for i, det in enumerate(detections):
     det["multiplier"] = portion["multiplier"]
     det["area_ratio"] = portion["area_ratio"]
 
-# Lampirkan kkal & gram ke tiap deteksi (untuk label gambar).
+
 for i, det in enumerate(detections):
     grams = grams_by_index.get(i) or db.default_grams(det["class_id"])
     nut = db.nutrition_for(det["class_id"], grams)
@@ -128,7 +121,7 @@ for i, det in enumerate(detections):
 rows, totals = build_item_rows(detections, db, grams_by_index)
 
 
-# ----------------------------- Output (Tabs) -----------------------------
+
 tab_main, tab_filter, tab_feat, tab_portion = st.tabs(
     ["🍽️ Deteksi & Nutrisi", "🧪 Filtering & Edge", "🔑 Fitur & NMS",
      "📐 Estimasi Porsi (Area)"])

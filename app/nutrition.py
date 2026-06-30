@@ -1,11 +1,3 @@
-"""Lookup nutrisi: petakan deteksi YOLO -> kkal & makro, lalu agregasi 1 piring.
-
-Sumber data:
-- BASE  : data/nutrition.csv          (draft heuristik, 256 baris; lihat tools/generate_nutrition_csv.py)
-- OVERRIDE: data/nutrition_overrides.csv (nilai TERVERIFIKASI utk makanan demo + sitasi `source`;
-            lihat tools/build_nutrition_overrides.py). Menimpa baris base by class_id.
-Pemetaan utama via class_id (0-based), cocok dgn model.names.
-"""
 from pathlib import Path
 
 import pandas as pd
@@ -92,12 +84,7 @@ class NutritionDB:
 
 
 def build_item_rows(detections, db: NutritionDB, grams_by_index=None):
-    """Bangun baris tabel per-item.
 
-    grams_by_index: dict {i: grams} hasil estimasi porsi (Tier 2). Bila None atau
-    indeks tak ada, pakai typical_serving_g (fallback porsi standar).
-    Returns: (rows: list[dict], totals: dict).
-    """
     rows = []
     totals = {"kcal": 0.0, "protein_g": 0.0, "carbs_g": 0.0, "fat_g": 0.0}
     for i, det in enumerate(detections):

@@ -1,16 +1,4 @@
-"""Fitur TAMBAHAN: deteksi & tracking BUAH real-time via webcam.
 
-Terpisah total dari pipeline makanan (detector.py/api.analyze) — tidak mengubah
-apa pun di sana. Model = YOLOv8 COCO pretrained: kelas apple/banana/orange sudah
-ada → TANPA training ulang. Tracking = ByteTrack bawaan Ultralytics.
-
-MATERI CV yang relevan (untuk laporan):
-- Object tracking: motion model **Kalman filter** (prediksi posisi antar-frame).
-- Data association: **Hungarian algorithm** (cocokkan deteksi ↔ track).
-→ Inilah yang membuat bounding box STABIL mengikuti buah yang digerakkan.
-
-Model di-load lazy (saat stream pertama diminta) supaya startup backend tetap cepat.
-"""
 import time
 
 import cv2
@@ -34,20 +22,14 @@ FRUIT_NUTRITION = {
 }
 
 _MODEL = None
-# Ukuran inferensi (px). Makin kecil → makin cepat (biaya ∝ ukuran²).
-# 320 = seimbang; turunkan ke 256 utk FPS lebih tinggi (akurasi sedikit turun).
+
 INFER_SIZE = 320
-# Status terkini (di-update tiap frame) untuk panel live di frontend.
+
 _latest = {"fruits": [], "fps": 0.0}
 
 
 def _get_model():
-    """Load YOLOv8n COCO sekali, percepat dengan OpenVINO bila tersedia.
-
-    OpenVINO mempercepat inferensi di CPU Intel ~2-3×. Folder
-    `yolov8n_openvino_model/` dibuat sekali (auto-export); bila openvino tidak
-    terpasang → fallback ke bobot .pt biasa (tetap jalan, hanya lebih lambat).
-    """
+    
     global _MODEL
     if _MODEL is None:
         from pathlib import Path
@@ -58,27 +40,24 @@ def _get_model():
         else:
             base = YOLO("yolov8n.pt")
             try:
-                base.export(format="openvino", imgsz=INFER_SIZE)  # buat folder sekali
+                base.export(format="openvino", imgsz=INFER_SIZE)  
                 _MODEL = YOLO(str(ov_dir), task="detect")
             except Exception:
-                _MODEL = base  # openvino tak ada → pakai .pt apa adanya
+                _MODEL = base  
     return _MODEL
 
 
 def fruit_info():
-    """Tabel referensi gizi 3 buah (untuk panel frontend)."""
-    return [{"name": name, **vals,
-             "kcal_serving": round(vals["kcal_100g"] * vals["serving_g"] / 100)}
-            for name, vals in FRUIT_NUTRITION.items()]
+    
+    return [{"name": name, **vals, "kcal_serving": round(vals["kcal_100g"] * vals["serving_g"] / 100)} for name, vals in FRUIT_NUTRITION.items()]
 
 
 def latest_status():
-    """Buah yang sedang terlihat + FPS (di-poll frontend tiap ~0.8 dtk)."""
+    
     return _latest
 
 
 def fruit_nutrition_for(name, grams):
-    """Gizi buah untuk `grams` gram (skala dari nilai per-100g USDA)."""
     v = FRUIT_NUTRITION[name]
     f = grams / 100.0
     return {
@@ -93,12 +72,7 @@ def fruit_nutrition_for(name, grams):
 
 
 def detect_fruits(rgb, conf=0.35):
-    """Deteksi apel/pisang/jeruk pada 1 gambar RGB (COCO model).
-
-    Dipakai pipeline /api/analyze (upload & foto webcam) supaya hasil deteksi buah
-    ikut muncul bersama deteksi makanan. class_id diberi offset 1000 agar tidak
-    bentrok dengan class_id makanan UEC (0-255).
-    """
+   
     model = _get_model()
     bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
     res = model.predict(bgr, classes=FRUIT_IDS, conf=conf,
@@ -116,24 +90,13 @@ def detect_fruits(rgb, conf=0.35):
 
 
 def generate_frames(cam_index=0, conf=0.35):
-    """Generator MJPEG: buka webcam, track buah tiap frame, yield JPEG ber-anotasi.
-
-    Dipakai oleh endpoint /api/track-stream (StreamingResponse). Kamera dilepas
-    otomatis saat klien memutus koneksi (blok finally).
-
-    OPTIMASI CPU:
-    - Resolusi webcam: 640×360 (vs 960×540, 4× lebih cepat)
-    - Deteksi SETIAP frame → box responsif mengikuti gerakan
-    - Inference size: INFER_SIZE px (320, kecil = cepat)
-    - OpenVINO (bila terpasang) → ~2-3× lebih cepat di CPU Intel
-    - JPEG quality: 70 (vs 80)
-    """
+    
     model = _get_model()
-    # CAP_DSHOW: backend Windows membuka webcam lebih cepat & andal.
+    
     cap = cv2.VideoCapture(cam_index, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # buang frame lama → kurangi lag
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1) 
     first = True
     prev = time.time()
     try:
@@ -144,8 +107,7 @@ def generate_frames(cam_index=0, conf=0.35):
             ok, frame = cap.read()
             if not ok:
                 break
-            # Deteksi+track SETIAP frame → box selalu menempel & responsif.
-            # persist=False di frame pertama → reset ID tiap sesi tracking baru.
+           
             res = model.track(frame, persist=not first, classes=FRUIT_IDS,
                               conf=conf, imgsz=INFER_SIZE, tracker="bytetrack.yaml",
                               verbose=False)

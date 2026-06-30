@@ -1,28 +1,9 @@
-"""MATERI: Edge detection + thresholding + morfologi -> mask area makanan.
-
-Tujuan: dari bounding box YOLO, segmentasi piksel makanan sesungguhnya (bukan
-seluruh kotak) untuk mendapat LUAS PIKSEL -> dipakai estimasi porsi (Tier 2).
-
-Heuristik: makanan biasanya lebih ber-saturasi daripada piring putih. Kita pakai
-kanal saturasi (HSV) + Otsu threshold + operasi morfologi (open/close) + ambil
-komponen terbesar. Ini aproksimasi, didokumentasikan sebagai keterbatasan.
-"""
 import cv2
 import numpy as np
 
 
 def segment_food_in_box(img_rgb, box):
-    """Segmentasi makanan di dalam satu bounding box.
-
-    Args:
-        img_rgb: gambar penuh (RGB uint8)
-        box: [x1, y1, x2, y2]
-    Returns dict:
-        area_px      : luas piksel makanan
-        box_px       : luas kotak
-        fill_ratio   : area_px / box_px
-        mask_full    : mask bool seukuran gambar penuh (True = makanan)
-    """
+    
     h, w = img_rgb.shape[:2]
     x1, y1, x2, y2 = [int(v) for v in box]
     x1, y1 = max(0, x1), max(0, y1)

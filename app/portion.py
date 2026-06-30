@@ -1,18 +1,7 @@
-"""Estimasi Porsi berdasarkan rasio area.
-
-Estimasi porsi menggunakan rasio luas segmentasi makanan terhadap luas gambar keseluruhan.
-"""
-
 import numpy as np
 
-# ---------------------------------------------------------------------------
-# Area-Ratio Portion Estimation
-# ---------------------------------------------------------------------------
-# Rasio luas segmentasi makanan terhadap luas gambar → size bucket → multiplier.
-# Threshold per food profile karena proporsi visual bervariasi antar jenis.
-
 _PROFILE_THRESHOLDS: dict[str, list[float]] = {
-    # Format: [batas_xs, batas_s, batas_m, batas_l] — di atas batas_l = XL.
+    
     "rice":     [0.02, 0.05, 0.12, 0.22],
     "noodle":   [0.02, 0.05, 0.12, 0.22],
     "meat":     [0.015, 0.04, 0.10, 0.18],
@@ -38,22 +27,8 @@ _SIZE_BUCKETS: list[tuple[str, float]] = [
 ]
 
 
-def estimate_portion_from_area(area_px, image_area, food_profile,
-                               typical_serving_g):
-    """Estimasi porsi berdasarkan rasio area makanan terhadap luas gambar.
+def estimate_portion_from_area(area_px, image_area, food_profile, typical_serving_g):
 
-    Args:
-        area_px:            luas piksel makanan (dari segmentasi Otsu).
-        image_area:         luas total gambar (width × height).
-        food_profile:       profil makanan dari CSV (rice, meat, …).
-        typical_serving_g:  porsi standar dari CSV.
-
-    Returns dict:
-        grams       : estimasi berat porsi (g).
-        size_label  : label ukuran (XS / S / M / L / XL).
-        multiplier  : faktor pengali terhadap porsi standar.
-        area_ratio  : rasio area makanan terhadap gambar.
-    """
     if image_area <= 0 or area_px <= 0:
         return {"grams": float(typical_serving_g), "size_label": "M",
                 "multiplier": 1.0, "area_ratio": 0.0}

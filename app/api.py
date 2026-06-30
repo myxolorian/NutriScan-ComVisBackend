@@ -1,12 +1,4 @@
-"""FastAPI backend untuk NutriScan — membungkus pipeline CV jadi HTTP API.
 
-Jalankan dari root project:
-    uvicorn api:app --app-dir app --port 8000 --reload
-
-Endpoint:
-    GET  /api/health  -> status + jumlah kelas
-    POST /api/analyze -> multipart(file + params) -> JSON lengkap utk 4 tab
-"""
 import base64
 import io
 import sys
@@ -23,16 +15,16 @@ APP_DIR = Path(__file__).resolve().parent
 if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
-import features_demo as feat          # noqa: E402
-import fruit as fruitmod              # noqa: E402  (fitur tambahan: tracking buah)
-import nms_demo as nmsd               # noqa: E402
-import portion as por                 # noqa: E402
-import preprocessing as pre           # noqa: E402
-import segmentation as seg            # noqa: E402
-from detector import FoodDetector, draw_detections   # noqa: E402
-from nutrition import NutritionDB                     # noqa: E402
+import features_demo as feat          
+import fruit as fruitmod              
+import nms_demo as nmsd              
+import portion as por                
+import preprocessing as pre           
+import segmentation as seg            
+from detector import FoodDetector, draw_detections   
+from nutrition import NutritionDB                     
 
-# ----------------------------- load resources sekali -----------------------------
+
 detector = FoodDetector()
 db = NutritionDB()
 
@@ -48,7 +40,7 @@ app.add_middleware(
 )
 
 
-# ----------------------------- helpers -----------------------------
+
 def _resize_max(rgb, max_dim):
     h, w = rgb.shape[:2]
     s = min(1.0, max_dim / max(h, w))
@@ -76,16 +68,16 @@ def preprocess(rgb, denoise, denoise_k, do_sharpen, sharpen_amt):
     return proc
 
 
-# ----------------------------- endpoints -----------------------------
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "n_classes": len(detector.names)}
 
 
-# ----------------------------- fitur tambahan: tracking buah (webcam) -----------
+
 @app.get("/api/track-stream")
 def track_stream():
-    """Stream MJPEG webcam dgn bounding box buah (ByteTrack). Pipeline terpisah."""
+   
     return StreamingResponse(
         fruitmod.generate_frames(),
         media_type="multipart/x-mixed-replace; boundary=frame",
@@ -94,13 +86,13 @@ def track_stream():
 
 @app.get("/api/track-status")
 def track_status():
-    """Buah yang sedang terlihat + FPS (utk panel live di frontend)."""
+    
     return fruitmod.latest_status()
 
 
 @app.get("/api/fruit-info")
 def fruit_info():
-    """Tabel referensi gizi 3 buah (apel/pisang/jeruk)."""
+    
     return {"fruits": fruitmod.fruit_info()}
 
 
@@ -119,12 +111,12 @@ async def analyze(
     H, W = rgb.shape[:2]
     proc = preprocess(rgb, denoise, denoise_k, do_sharpen, sharpen_amt)
 
-    # ---- deteksi (multi-plate: semua makanan yang terdeteksi) ----
+    
     dets = detector.predict(proc, conf=conf, iou=iou)
     dets.sort(key=lambda d: d["conf"], reverse=True)
     image_area = H * W
 
-    # ---- segmentasi + estimasi porsi per item ----
+    
     detections_out = []
     seg_masks = []
     totals = {"kcal": 0.0, "protein_g": 0.0, "carbs_g": 0.0, "fat_g": 0.0}
@@ -161,8 +153,8 @@ async def analyze(
         for k in totals:
             totals[k] += nut[k]
 
-    # ---- fitur tambahan: deteksi buah (apel/pisang/jeruk) via COCO ----
-    # Membuat upload image & foto webcam juga mengenali buah (model COCO terpisah).
+    
+    
     for fd in fruitmod.detect_fruits(proc, conf=conf):
         s = seg.segment_food_in_box(proc, fd["xyxy"])
         seg_masks.append(s["mask_full"])
@@ -189,7 +181,7 @@ async def analyze(
         for k in totals:
             totals[k] += nut[k]
 
-    # ---- gambar overlay (pakai salinan di-downscale supaya cepat & ringan) ----
+    
     disp = _resize_max(rgb, DISP_MAX)
     disp_proc = _resize_max(proc, DISP_MAX)
     images = {
@@ -204,14 +196,14 @@ async def analyze(
     orb_img, orb_n = feat.orb_keypoints(disp)
     images["harris"], images["shi_tomasi"], images["orb"] = (
         to_data_url(h_img), to_data_url(st_img), to_data_url(orb_img))
-    # Invariance / augmentasi: cocokkan citra dgn versi rotasi+skala-nya (ORB).
+    
     match_img, match_n = feat.orb_match_invariance(disp)
     images["orb_match"] = to_data_url(match_img, max_dim=1100)
-    # Segmentasi area makanan (overlay merah) — visualisasi materi segmentasi.
+    
     images["segmentation"] = (to_data_url(seg.overlay_masks(rgb, seg_masks))
                               if seg_masks else None)
 
-    # ---- NMS demo ----
+    
     before = detector.predict(disp_proc, conf=max(0.05, conf - 0.1), iou=0.9, max_det=300)
     if len(before) <= 1 and before:
         before = nmsd.make_synthetic_overlaps(before)

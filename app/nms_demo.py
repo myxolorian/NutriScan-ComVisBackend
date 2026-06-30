@@ -1,14 +1,8 @@
-"""MATERI: Non-Maximum Suppression (NMS) — implementasi from-scratch.
-
-YOLO sudah melakukan NMS internal (parameter `iou`). Modul ini meng-implementasi
-NMS sendiri untuk demonstrasi/penjelasan: ambil banyak kotak tumpang-tindih
-(dengan iou tinggi saat predict) lalu tunjukkan efek NMS before/after.
-"""
 import numpy as np
 
 
 def iou(box_a, box_b):
-    """Intersection-over-Union dua kotak [x1,y1,x2,y2]."""
+    
     ax1, ay1, ax2, ay2 = box_a
     bx1, by1, bx2, by2 = box_b
     ix1, iy1 = max(ax1, bx1), max(ay1, by1)
@@ -22,10 +16,7 @@ def iou(box_a, box_b):
 
 
 def nms(boxes, scores, iou_thresh=0.45):
-    """Greedy NMS from-scratch. Return indeks kotak yang dipertahankan.
 
-    boxes: list/array [N,4] format [x1,y1,x2,y2]; scores: list/array [N].
-    """
     if len(boxes) == 0:
         return []
     boxes = np.asarray(boxes, dtype=float)
@@ -40,11 +31,7 @@ def nms(boxes, scores, iou_thresh=0.45):
 
 
 def make_synthetic_overlaps(detections, per_box=5, jitter=0.12, seed=0):
-    """Buat kotak tumpang-tindih sintetis di sekitar tiap deteksi.
-
-    Berguna untuk demo NMS saat gambar bersih (YOLO sudah membuang duplikat),
-    sehingga efek NMS tetap terlihat jelas. Ditandai sebagai contoh demonstrasi.
-    """
+    
     rng = np.random.default_rng(seed)
     out = []
     for d in detections:
@@ -63,10 +50,7 @@ def make_synthetic_overlaps(detections, per_box=5, jitter=0.12, seed=0):
 
 
 def nms_on_detections(detections, iou_thresh=0.45):
-    """Terapkan NMS (class-agnostic) pada list deteksi dict {xyxy, conf}.
-
-    Return (kept_detections, removed_detections).
-    """
+    
     if not detections:
         return [], []
     boxes = [d["xyxy"] for d in detections]
